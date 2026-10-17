@@ -38,8 +38,29 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             clean build
 
+      - name: Verify bundled TTS model
+        run: |
+          APP="build/Build/Products/Release-iphoneos/VietVoice.app"
+          for file in \
+            duration_predictor.int8.onnx \
+            text_encoder.int8.onnx \
+            vector_estimator.int8.onnx \
+            vocoder.int8.onnx \
+            tts.json \
+            unicode_indexer.bin \
+            voice.bin; do
+            if [[ ! -f "$APP/$file" && ! -f "$APP/Supertonic/$file" ]]; then
+              echo "ERROR: Missing bundled model file: $file"
+              find "$APP" -maxdepth 2 -type f | sort
+              exit 1
+            fi
+          done
+          echo "All TTS model files are bundled."
+          du -sh "$APP"
+
       - name: Package IPA
         run: |
+          rm -rf Payload VietVoice-unsigned.ipa
           mkdir Payload
           cp -R build/Build/Products/Release-iphoneos/VietVoice.app Payload/
           zip -qry VietVoice-unsigned.ipa Payload

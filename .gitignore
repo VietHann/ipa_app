@@ -1,0 +1,12 @@
+.DS_Store
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+VietVoice.xcodeproj/
+Payload/
+VietVoice-unsigned.ipa
+.supertonic.tar.bz2
+VietVoice/Resources/Supertonic/*.onnx
+VietVoice/Resources/Supertonic/*.bin
+VietVoice/Resources/Supertonic/*.json

@@ -23,15 +23,28 @@ targets:
         excludes:
           - Resources
           - Assets.xcassets
-    resources:
       - path: VietVoice/Assets.xcassets
-      - path: VietVoice/Resources
+        buildPhase: resources
+      - path: VietVoice/Resources/Supertonic/duration_predictor.int8.onnx
+        buildPhase: resources
+      - path: VietVoice/Resources/Supertonic/text_encoder.int8.onnx
+        buildPhase: resources
+      - path: VietVoice/Resources/Supertonic/vector_estimator.int8.onnx
+        buildPhase: resources
+      - path: VietVoice/Resources/Supertonic/vocoder.int8.onnx
+        buildPhase: resources
+      - path: VietVoice/Resources/Supertonic/tts.json
+        buildPhase: resources
+      - path: VietVoice/Resources/Supertonic/unicode_indexer.bin
+        buildPhase: resources
+      - path: VietVoice/Resources/Supertonic/voice.bin
+        buildPhase: resources
     info:
       path: VietVoice/Info.plist
       properties:
         CFBundleDisplayName: VietVoice
-        CFBundleShortVersionString: "1.0"
-        CFBundleVersion: "1"
+        CFBundleShortVersionString: "1.0.1"
+        CFBundleVersion: "2"
         UILaunchScreen: {}
         UIFileSharingEnabled: true
         LSSupportsOpeningDocumentsInPlace: true

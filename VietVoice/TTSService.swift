@@ -15,7 +15,7 @@ enum TTSError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .missingModel(let name):
-            return "Thiếu model local: \(name). Chạy scripts/fetch_model.sh trước khi build."
+            return "Thiếu model local trong bản cài đặt: \(name). Vui lòng cài lại bản IPA mới nhất."
         case .failedToCreateOutputDirectory:
             return "Không thể tạo thư mục lưu âm thanh."
         case .generationFailed:
@@ -29,7 +29,12 @@ final class LocalTTSService {
     private let lock = NSLock()
 
     private func resource(_ name: String, _ ext: String) throws -> String {
+        // Xcode may flatten resource files into the bundle root, while a folder
+        // reference keeps them under Supertonic/. Support both layouts.
         if let path = Bundle.main.path(forResource: name, ofType: ext) {
+            return path
+        }
+        if let path = Bundle.main.path(forResource: name, ofType: ext, inDirectory: "Supertonic") {
             return path
         }
         throw TTSError.missingModel("\(name).\(ext)")

@@ -66,8 +66,14 @@ jobs:
           zip -qry VietVoice-unsigned.ipa Payload
           ls -lh VietVoice-unsigned.ipa
 
+          SIZE=$(stat -f%z VietVoice-unsigned.ipa)
+          if [[ "$SIZE" -lt 30000000 ]]; then
+            echo "ERROR: IPA is unexpectedly small ($SIZE bytes). Model was likely not bundled."
+            exit 1
+          fi
+
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: VietVoice-unsigned-ipa
+          name: VietVoice-2.0-unsigned-ipa
           path: VietVoice-unsigned.ipa

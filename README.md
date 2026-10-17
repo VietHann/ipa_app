@@ -1,17 +1,23 @@
-# VietVoice
+# VietVoice 2.0
 
-Native iOS Vietnamese text-to-speech app that runs inference locally on-device.
+Native iOS Vietnamese text-to-speech app that runs fully on-device after installation.
 
-## Included features
+## 2.0 highlights
 
-- Vietnamese TTS fully local after installation
-- 10 Supertonic speaker IDs
-- Speed control (0.75x–1.50x)
-- Quality / inference-step control
-- WAV playback, seek, export/share
-- Local generation history in `Documents/VietVoice`
-- No account, API key, backend, analytics, or network call during inference
-- iPhone + iPad, iOS 16+
+- Redesigned three-tab SwiftUI interface: **Studio / Library / Settings**
+- Cute glass/pastel visual system with animated waveform/orb and tactile button animations
+- Fixed playback state: play/pause now tracks the actual loaded file and supports ±5 second seeking
+- Sentence-aware local synthesis: long text is split into manageable phrases before inference
+- Smoother output: short edge fades, punctuation-aware pauses, peak normalization, then one WAV is written locally
+- Reading presets: Natural, Narration, Soft, Brisk
+- Speed, quality/inference-step, sentence-pause controls
+- Text normalization for more stable Vietnamese reading
+- Clipboard paste, TXT import, demo text, quick clear
+- Auto-play after synthesis
+- WAV library with search, rename, share, delete, and delete-all
+- Persistent settings and optional haptic feedback
+- Background audio playback
+- No backend, API key, analytics, or network call during inference
 
 ## Stack
 
@@ -20,7 +26,11 @@ Native iOS Vietnamese text-to-speech app that runs inference locally on-device.
 - Supertonic 3 INT8 multilingual TTS model
 - Vietnamese generation via `lang = vi`
 
-## Build on a Mac
+## Build unsigned IPA with GitHub Actions
+
+Every push to `main` triggers **Build unsigned IPA**. The workflow downloads the TTS model, verifies all model files are bundled into the app, builds for iPhone, and uploads `VietVoice-2.0-unsigned-ipa` as an artifact.
+
+## Build locally on macOS
 
 ```bash
 brew install xcodegen
@@ -29,47 +39,22 @@ xcodegen generate
 open VietVoice.xcodeproj
 ```
 
-Select your Apple Development team in Xcode, choose a connected iPhone, then Run/Archive.
-
-## Build an unsigned IPA
+or:
 
 ```bash
-brew install xcodegen
 ./scripts/build_unsigned_ipa.sh
 ```
 
-Output: `VietVoice-unsigned.ipa`.
+The unsigned IPA still needs signing before normal installation on a physical iPhone.
 
-Unsigned IPA still needs signing before normal installation on a physical iPhone (for example with your own Apple development certificate / sideloading setup).
+## Local privacy
 
-## GitHub Actions
-
-Push this folder to GitHub and run **Build unsigned IPA** from the Actions tab. The workflow downloads the model, builds the device app on a macOS runner, packages it into an IPA, and uploads it as an artifact.
-
-## Model files
-
-`scripts/fetch_model.sh` downloads:
-
-`sherpa-onnx-supertonic-3-tts-int8-2026-05-11`
-
-The script copies these into the app bundle:
-
-- `duration_predictor.int8.onnx`
-- `text_encoder.int8.onnx`
-- `vector_estimator.int8.onnx`
-- `vocoder.int8.onnx`
-- `tts.json`
-- `unicode_indexer.bin`
-- `voice.bin`
-
-Once they are bundled into the IPA, synthesis works offline.
+Once the model is bundled into the installed IPA, text-to-speech synthesis happens on the device. Generated WAV files are saved under the app Documents/VietVoice directory.
 
 ## Bundle ID
 
-Default: `xyz.noxhub.vietvoice`
+`xyz.noxhub.vietvoice`
 
-Change `PRODUCT_BUNDLE_IDENTIFIER` in `project.yml` if needed.
+## Credit
 
-## Distribution note
-
-Before redistributing the app publicly, review and comply with the licenses/notices of sherpa-onnx, ONNX Runtime, and the selected TTS model.
+`cre: VietHannn`

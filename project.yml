@@ -43,11 +43,13 @@ targets:
       path: VietVoice/Info.plist
       properties:
         CFBundleDisplayName: VietVoice
-        CFBundleShortVersionString: "1.0.1"
-        CFBundleVersion: "2"
+        CFBundleShortVersionString: "2.0.0"
+        CFBundleVersion: "10"
         UILaunchScreen: {}
         UIFileSharingEnabled: true
         LSSupportsOpeningDocumentsInPlace: true
+        UIBackgroundModes:
+          - audio
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
     settings:

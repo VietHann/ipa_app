@@ -27,12 +27,16 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Picker("Giọng mặc định", selection: $vm.selectedVoice) {
-                        ForEach(vm.voices) { voice in
-                            Text(voice.name).tag(voice.id)
+                    HStack(alignment: .top, spacing: 12) {
+                        Label("Giọng", systemImage: "waveform")
+                        Spacer()
+                        VStack(alignment: .trailing, spacing: 3) {
+                            Text(NarratorVoice.title).fontWeight(.semibold)
+                            Text("Cố định · offline")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
                     }
-                    .onChange(of: vm.selectedVoice) { _ in vm.persistSettings() }
 
                     Picker("Phong cách", selection: Binding(
                         get: { vm.style },
@@ -88,7 +92,7 @@ struct SettingsView: View {
 
                 Section {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("VietVoice 2.0")
+                        Text("VietVoice 2.1")
                             .font(.headline)
                         Text("Local Vietnamese Text to Speech")
                             .font(.caption)

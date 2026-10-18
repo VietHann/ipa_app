@@ -54,7 +54,7 @@ struct StudioView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("VietVoice")
                     .font(.system(size: 31, weight: .bold, design: .rounded))
-                Text("Giọng Việt local, riêng tư trên iPhone")
+                Text("Một giọng trầm. Ngàn câu chuyện.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -190,50 +190,47 @@ struct StudioView: View {
     }
 
     private var voiceSelector: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Label("Chọn giọng", systemImage: "person.wave.2")
+                Label("Giọng kể chuyện", systemImage: "waveform")
                     .font(.headline)
                 Spacer()
-                Text("10 giọng local")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                Label("Giọng duy nhất", systemImage: "checkmark.seal.fill")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(VVTheme.lavender)
             }
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
-                    ForEach(vm.voices) { voice in
-                        Button {
-                            withAnimation(.spring(response: 0.26, dampingFraction: 0.78)) {
-                                vm.selectedVoice = voice.id
-                                vm.persistSettings()
-                            }
-                        } label: {
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack {
-                                    Image(systemName: voice.symbol)
-                                        .font(.title3)
-                                    Spacer()
-                                    if vm.selectedVoice == voice.id {
-                                        Image(systemName: "heart.fill")
-                                            .font(.caption)
-                                    }
-                                }
-                                Text(voice.name)
-                                    .font(.subheadline.weight(.semibold))
-                                Text(voice.subtitle)
-                                    .font(.caption2)
-                                    .foregroundStyle(vm.selectedVoice == voice.id ? .white.opacity(0.76) : .secondary)
-                            }
-                            .frame(width: 124, alignment: .leading)
-                            .padding(12)
-                            .background(vm.selectedVoice == voice.id ? AnyShapeStyle(VVTheme.accentGradient) : AnyShapeStyle(Color.white.opacity(0.78)), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                            .foregroundStyle(vm.selectedVoice == voice.id ? Color.white : Color.primary)
-                        }
-                        .buttonStyle(VVScaleButtonStyle())
-                    }
+            HStack(spacing: 14) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(VVTheme.primaryGradient)
+                        .frame(width: 70, height: 70)
+                        .shadow(color: VVTheme.lavender.opacity(0.24), radius: 14, x: 0, y: 8)
+                    AnimatedWaveform(
+                        isActive: vm.isGenerating || vm.player.isPlaying,
+                        barCount: 9,
+                        height: 29,
+                        tint: .white
+                    )
                 }
+
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(NarratorVoice.title)
+                        .font(.system(.title3, design: .rounded, weight: .bold))
+                    Text(NarratorVoice.subtitle)
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(VVTheme.lavender)
+                    Text(NarratorVoice.description)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
             }
+
+            Text("Giọng trầm phong cách điện ảnh; không phải giọng Adam gốc.")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
         }
         .vvCard()
     }

@@ -78,7 +78,6 @@ final class LocalTTSService {
 
     func synthesize(
         text: String,
-        speakerId: Int,
         speed: Float,
         numSteps: Int,
         sentencePause: TimeInterval,
@@ -90,7 +89,7 @@ final class LocalTTSService {
         guard !chunks.isEmpty else { throw TTSError.generationFailed }
 
         var generation = SherpaOnnxGenerationConfigSwift()
-        generation.sid = speakerId
+        generation.sid = NarratorVoice.speakerID
         generation.speed = speed
         generation.numSteps = numSteps
         generation.silenceScale = 0.16

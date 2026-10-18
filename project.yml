@@ -43,8 +43,8 @@ targets:
       path: VietVoice/Info.plist
       properties:
         CFBundleDisplayName: VietVoice
-        CFBundleShortVersionString: "2.0.0"
-        CFBundleVersion: "10"
+        CFBundleShortVersionString: "2.1.0"
+        CFBundleVersion: "11"
         UILaunchScreen: {}
         UIFileSharingEnabled: true
         LSSupportsOpeningDocumentsInPlace: true

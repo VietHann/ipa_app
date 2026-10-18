@@ -18,6 +18,15 @@ jobs:
       - name: Download local TTS model
         run: ./scripts/fetch_model.sh
 
+      - name: Verify single narrator configuration
+        run: |
+          grep -q 'static let speakerID = 6' VietVoice/NarratorVoice.swift
+          grep -q 'generation.sid = NarratorVoice.speakerID' VietVoice/TTSService.swift
+          if grep -R -n 'selectedVoice\|vm.voices' VietVoice --include='*.swift'; then
+            echo "ERROR: Legacy multi-voice selector is still referenced."
+            exit 1
+          fi
+
       - name: Generate Xcode project
         run: xcodegen generate
 
@@ -75,5 +84,5 @@ jobs:
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: VietVoice-2.0-unsigned-ipa
+          name: VietVoice-2.1-unsigned-ipa
           path: VietVoice-unsigned.ipa

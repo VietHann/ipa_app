@@ -4,13 +4,6 @@ import SwiftUI
 import UIKit
 #endif
 
-struct VoicePreset: Identifiable, Hashable {
-    let id: Int
-    let name: String
-    let subtitle: String
-    let symbol: String
-}
-
 enum TTSStylePreset: String, CaseIterable, Identifiable {
     case natural
     case narration
@@ -40,7 +33,7 @@ enum TTSStylePreset: String, CaseIterable, Identifiable {
     var speed: Double {
         switch self {
         case .natural: return 0.96
-        case .narration: return 0.91
+        case .narration: return 0.90
         case .soft: return 0.86
         case .brisk: return 1.08
         }
@@ -49,7 +42,7 @@ enum TTSStylePreset: String, CaseIterable, Identifiable {
     var pause: Double {
         switch self {
         case .natural: return 0.12
-        case .narration: return 0.17
+        case .narration: return 0.18
         case .soft: return 0.21
         case .brisk: return 0.08
         }
@@ -64,8 +57,7 @@ enum TTSStylePreset: String, CaseIterable, Identifiable {
 }
 
 final class TTSViewModel: ObservableObject {
-    @Published var text = "Xin chào! Đây là VietVoice. Giọng nói này được tạo hoàn toàn trên iPhone và không cần kết nối Internet."
-    @Published var selectedVoice: Int
+    @Published var text = "Đêm Sài Gòn, thành phố vẫn chưa ngủ. Giữa những ánh đèn xa, có những câu chuyện chỉ cần được kể bằng một giọng nói thật bình yên."
     @Published var speed: Double
     @Published var qualitySteps: Int
     @Published var pauseBetweenSentences: Double
@@ -80,22 +72,12 @@ final class TTSViewModel: ObservableObject {
     @Published var history: [URL] = []
 
     let player = AudioPlayerController()
-    let voices: [VoicePreset] = (0..<10).map { index in
-        VoicePreset(
-            id: index,
-            name: "Giọng \(index + 1)",
-            subtitle: index < 5 ? "Tự nhiên · rõ" : "Ấm · biểu cảm",
-            symbol: index.isMultiple(of: 2) ? "waveform" : "speaker.wave.2.fill"
-        )
-    }
-
     private let service = LocalTTSService()
     private let defaults = UserDefaults.standard
 
     init() {
-        let storedStyle = defaults.string(forKey: "vv.style").flatMap(TTSStylePreset.init(rawValue:)) ?? .natural
+        let storedStyle = defaults.string(forKey: "vv.style").flatMap(TTSStylePreset.init(rawValue:)) ?? .narration
         style = storedStyle
-        selectedVoice = defaults.object(forKey: "vv.voice") as? Int ?? 0
         speed = defaults.object(forKey: "vv.speed") as? Double ?? storedStyle.speed
         qualitySteps = defaults.object(forKey: "vv.steps") as? Int ?? storedStyle.qualitySteps
         pauseBetweenSentences = defaults.object(forKey: "vv.pause") as? Double ?? storedStyle.pause
@@ -148,7 +130,6 @@ final class TTSViewModel: ObservableObject {
         errorMessage = nil
         persistSettings()
 
-        let speaker = selectedVoice
         let selectedSpeed = Float(speed)
         let steps = qualitySteps
         let pause = pauseBetweenSentences
@@ -160,7 +141,6 @@ final class TTSViewModel: ObservableObject {
             do {
                 let url = try self.service.synthesize(
                     text: cleanText,
-                    speakerId: speaker,
                     speed: selectedSpeed,
                     numSteps: steps,
                     sentencePause: pause,
@@ -260,7 +240,7 @@ final class TTSViewModel: ObservableObject {
     }
 
     func insertDemoText() {
-        text = "Xin chào, mình là VietVoice. Đây là bản demo giọng nói tiếng Việt chạy hoàn toàn local trên iPhone. Bạn có thể chọn giọng, đổi phong cách đọc, điều chỉnh nhịp nghỉ và xuất file WAV ngay trên máy."
+        text = "Đêm Sài Gòn, một cơn mưa vừa đi qua. Ánh đèn vàng hắt xuống mặt đường còn ướt. Có những câu chuyện không cần kể vội. Chỉ một giọng nói trầm ấm, một chút lặng im, cũng đủ khiến người ta muốn lắng nghe."
         haptic(.selection)
     }
 
@@ -291,7 +271,6 @@ final class TTSViewModel: ObservableObject {
 
     func persistSettings() {
         defaults.set(style.rawValue, forKey: "vv.style")
-        defaults.set(selectedVoice, forKey: "vv.voice")
         defaults.set(speed, forKey: "vv.speed")
         defaults.set(qualitySteps, forKey: "vv.steps")
         defaults.set(pauseBetweenSentences, forKey: "vv.pause")
@@ -301,11 +280,10 @@ final class TTSViewModel: ObservableObject {
     }
 
     func resetSettings() {
-        style = .natural
-        selectedVoice = 0
-        speed = TTSStylePreset.natural.speed
-        qualitySteps = TTSStylePreset.natural.qualitySteps
-        pauseBetweenSentences = TTSStylePreset.natural.pause
+        style = .narration
+        speed = TTSStylePreset.narration.speed
+        qualitySteps = TTSStylePreset.narration.qualitySteps
+        pauseBetweenSentences = TTSStylePreset.narration.pause
         enhanceReadability = true
         autoPlay = true
         hapticsEnabled = true

@@ -1,60 +1,41 @@
-# VietVoice 2.0
+# VietVoice 2.1 — Single Narrator
 
-Native iOS Vietnamese text-to-speech app that runs fully on-device after installation.
+Native Vietnamese text-to-speech for iPhone, using **one fixed male narrator voice** entirely on-device.
 
-## 2.0 highlights
+## Voice choice
 
-- Redesigned three-tab SwiftUI interface: **Studio / Library / Settings**
-- Cute glass/pastel visual system with animated waveform/orb and tactile button animations
-- Fixed playback state: play/pause now tracks the actual loaded file and supports ±5 second seeking
-- Sentence-aware local synthesis: long text is split into manageable phrases before inference
-- Smoother output: short edge fades, punctuation-aware pauses, peak normalization, then one WAV is written locally
-- Reading presets: Natural, Narration, Soft, Brisk
-- Speed, quality/inference-step, sentence-pause controls
-- Text normalization for more stable Vietnamese reading
-- Clipboard paste, TXT import, demo text, quick clear
-- Auto-play after synthesis
-- WAV library with search, rename, share, delete, and delete-all
-- Persistent settings and optional haptic feedback
-- Background audio playback
-- No backend, API key, analytics, or network call during inference
+The app uses Supertonic 3 INT8, voice **M2 (James)**, fixed in code at **sherpa-onnx speaker ID 6**. Its preset is described as *deep, composed male*. In the UI it is called **Trầm · Cinematic Narrator**. This is an **original preset from Supertonic**, **not Adam from ElevenLabs**, and it is not an audio clone or sound-alike guarantee.
 
-## Stack
+- No voice selector or configurable voice ID. Previous user defaults for voice choice are ignored.
+- Reading styles change speaking speed, diffusion steps, and sentence pauses **without changing the voice**.
+- Vietnamese inference is always local with `lang = vi`, model weights bundled in the IPA.
+- Short edge fades and sentence-aware pauses produce WAV PCM16 recordings.
+- Studio, search/rename/export/delete library, playback, import TXT, haptics and persisted settings.
+- Supports iOS 16+; designed with iPhone 11 in mind, but audio naturalness and runtime speed require device testing.
 
-- SwiftUI + AVFoundation
-- `sherpa-onnx` Swift Package
-- Supertonic 3 INT8 multilingual TTS model
-- Vietnamese generation via `lang = vi`
+## Build
 
-## Build unsigned IPA with GitHub Actions
+GitHub Actions runs automatically on pushes to `main`, verifies the model and narrator configuration, and uploads `VietVoice-2.1-unsigned-ipa`.
 
-Every push to `main` triggers **Build unsigned IPA**. The workflow downloads the TTS model, verifies all model files are bundled into the app, builds for iPhone, and uploads `VietVoice-2.0-unsigned-ipa` as an artifact.
-
-## Build locally on macOS
+For macOS local builds:
 
 ```bash
 brew install xcodegen
 ./scripts/fetch_model.sh
-xcodegen generate
-open VietVoice.xcodeproj
-```
-
-or:
-
-```bash
 ./scripts/build_unsigned_ipa.sh
 ```
 
-The unsigned IPA still needs signing before normal installation on a physical iPhone.
+Unsigned IPA still requires signing/sideloading to install on a physical iPhone.
 
-## Local privacy
+## Research
 
-Once the model is bundled into the installed IPA, text-to-speech synthesis happens on the device. Generated WAV files are saved under the app Documents/VietVoice directory.
+- [Supertonic 3](https://github.com/supertone-oss-archive/supertonic) — offline 31-language open-weight voice engine.
+- [sherpa-onnx Supertonic docs](https://github.com/k2-fsa/sherpa/blob/master/docs/source/onnx/tts/supertonic.rst) — iOS-compatible model config.
+- [Speaker ID map](https://www.npmjs.com/package/@zhenryx/react-native-sherpa-tts) — F1–F5 = 0–4; M1–M5 = 5–9. Thus M2 = 6.
+- [Voice style descriptions](https://huggingface.co/Kyumdroid/supertonic-3-quant) — M2 James: deep, composed male.
 
-## Bundle ID
+Note: Models include all ten speaker embeddings internally; app always selects only M2. Repacking the internal `voice.bin` could break the runtime, so we do not alter it.
 
-`xyz.noxhub.vietvoice`
+## Credits
 
-## Credit
-
-`cre: VietHannn`
+Model: Supertone / sherpa-onnx. App: **cre: VietHannn**.
